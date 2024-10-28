@@ -633,7 +633,7 @@ if __name__ == "__main__":
 ```
 
 Example Output:
-![SpyderPlot](/Users/pfb2024/BestieBubble2/Bestie-Bubble/BETA/SMOLLYandAmandaHerreraMD.png)
+![SpyderPlot](SMOLLYandAmandaHerreraMD.png)
 
 ## Visual Output in the GUI
 <<<<<<< Updated upstream
