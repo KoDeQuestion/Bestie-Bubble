@@ -97,7 +97,7 @@ image_label.pack()
 parent.mainloop()
 ```
 ## Reading in Numerical Data
-### Reading in the Test Data
+### Reading in the Test Database
 
 #### NamedSubInput.py
 Generate Fake Names and add them as the first column for the public data set we found. Not technically part of the pipeline, but a very fun package! 
@@ -118,9 +118,52 @@ df['Name'] = random_names[:len(df)]
 df.to_csv('named.sub.trimmed.csv', index=False)
 print("Updated CSV file saved as 'updated_file.csv'")
 ```
+
+
+
+#### InputToDict.py
+This reads in our test data set and breaks it up into a dictionary.
+
+{User : {Attribute : [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10], Attr...}, ...}
+
+```
+import csv
+
+def FileToDict(filename):
+    user_dict = {}
+    with open(filename, mode='r') as INPUT:
+        
+        csv_reader = csv.reader(INPUT)
+        for row in csv_reader:
+            user_name = row[0]
+            att_dict = {
+                'Agreeableness': row[1:11],
+                'Extroverted': row[11:21],
+                'Openness': row[21:31],
+                'Conscientiousness': row[31:41],
+                'Neuroticism': row[41:51]
+            }
+            user_dict[user_name] = att_dict
+            
+        return user_dict
+
+
+# Main execution block
+if __name__ == "__main__":
+    # Example usage
+    import json
+    file_path = '../BETA/30subs.named.csv'  
+    user_dict = FileToDict(file_path)
+    with open('30UserSubbed.txt', 'w') as file:
+        json.dump(user_dict, file)
+
+
+```
+
+### Reading in User Input as a New 1-Line CSV
+```
 #Dictionary for user input
 import json
-
 def function1():
 
     dict1 = {}
@@ -164,13 +207,8 @@ def main():
 
 if __name__=='__main__':
     main() 
-
-#### InputToDict.py
-This reads in our test data set and breaks it up into a dictionary.
-
-{User : {Attribute : [Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10], Attr...}, ...}
-
 ```
+<<<<<<< Updated upstream
 import csv
 
 def FileToDict(filename):
@@ -204,6 +242,8 @@ if __name__ == "__main__":
 
 
 ### Reading in User Input as a New Line
+=======
+>>>>>>> Stashed changes
 
 
 ## Reading in Categorical Data
@@ -457,16 +497,20 @@ The TopMatchDB Function takes the top match list outputted from [Bekah's Code] a
 
 The EuDict Function relies on euclidean_distance and EuD4Match to build a dictionary of average euclidean distances between the user and each match, separated by attribute category.
 
+It was simpler to integrate all processing per match into a single for loop. So in the same loop as EuD4Match is calculated, you also convert those distances to simularity scores and plot those in Sypder Plots using SpyderScPlot and makeradar. 
+
 ```
+import pandas as pd
+import re
+import sys
+
+
 def TopMatchDB(TopMatchList, DataBaseDict):
-    topmatchdict = {key: DataBaseDict[key] for key in topmatchlist if key in DataBaseDict}
+    TopMatchList = TopMatchList[0]
+    topmatchdict = {key: DataBaseDict[key] for key in TopMatchList if key in DataBaseDict}
     return topmatchdict
 
-#I have this dictionary. I want to calculate the distance for each sub-key
-# (i.e. Agreeableness, Openness, Neuroticism, Openness, Conscientiousness)
-# between the main key (i.e. SMOLLY and BIGGY and save that to a list.
-
-# calculate the Euclidean distance between two vectors
+# Calculate the Euclidean distance between two vectors
 def euclidean_distance(row1, row2):
     import math
     distance = 0.0
@@ -474,7 +518,7 @@ def euclidean_distance(row1, row2):
         distance += (int(row1[i]) - int(row2[i])) ** 2
     return math.sqrt(distance)
 
-# Calculate distances
+# Calculate distances between two users:
 def EuD4Match(Username, Matchname, data):
     distances = {}
     for trait in data[Username]:
@@ -484,31 +528,21 @@ def EuD4Match(Username, Matchname, data):
     return distances
 
 #Generates Euclidean Distances for Attributes Between User and Top Matches
-def EuDict(Username, filename):     #ADD TOPMATCHLIST ???
+def EuDict(Username, filename, TPList):
     import json 
-    filename = '30UserSubbed.txt' #SUBJECT TO CHANGE
     with open(filename, 'r') as BigDB:
         data = BigDB.read()
         user_dict = json.loads(data)
-    # topmatchlist = ['SMOLLY', 'Leah Huff', 'Pamela Wheeler', 'Amanda Herrera MD', 'Thomas Powell'] #READ IN???
-    TopMatchDict = TopMatchDB(topmatchlist, user_dict)
-     
+    TopMatchDict = TopMatchDB(TPList, user_dict)
+         
     # Loop through topmatchlist to calculate and print Euclidean distances
     EucliDict = {}
-    for topmatch in topmatchlist:
+    for topmatch in TPList[0]:
         if topmatch != Username:  # Avoid comparing SMOLLY with itself
             EuDisUserVsMatch = EuD4Match(Username, topmatch, TopMatchDict)
             #print(f"Distances between {Username} and {topmatch}: {EuDisUserVsMatch}")
             EucliDict[topmatch] = EuDisUserVsMatch
-    return EucliDict
-
-# Main execution block
-if __name__ == "__main__":
-    filename = '30UserSubbed.txt'
-    user = 'SMOLLY'
-    topmatchlist = ['SMOLLY', 'Leah Huff', 'Pamela Wheeler', 'Amanda Herrera MD', 'Thomas Powell'] #READ IN???
-    EuDisUserVsMatch = EuDict(user, filename)
-    print(EuDisUserVsMatch)
+    return EucliDict    
 ```
 #### DictToScoreToRadar
 
@@ -599,6 +633,11 @@ if __name__ == "__main__":
 ```
 
 Example Output:
-![SpyderPlot](/Users/pfb2024/BestieBubble2/Bestie-Bubble//241027_KQScripts/SMOLLYandAmandaHerreraMD.png)
+![SpyderPlot](/Users/pfb2024/BestieBubble2/Bestie-Bubble/BETA/SMOLLYandAmandaHerreraMD.png)
 
 ## Visual Output in the GUI
+<<<<<<< Updated upstream
+=======
+
+# Running Via BETAStitch.py
+>>>>>>> Stashed changes

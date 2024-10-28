@@ -17,7 +17,7 @@ def euclid_grapher(distances,user):
 
     colors = ['black'] * len(sorted_dict)
     colors[0] = 'magenta'
-    colors[1] = '#FFD700'
+    # colors[1] = '#FFD700'
     colors[2] = '#C0C0C0'
     colors[3] = '#CD7F32'
     colors[len(sorted_dict)-1] = "#8FC554"
